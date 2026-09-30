@@ -1,24 +1,26 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::{Amount, AccountId};
-
 #[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct GenesisAccount {
-    pub id: AccountId,
-    pub balance: Amount,
+pub struct Config {
+    pub network_name: String,
+    pub rpc_host: String,
+    pub rpc_port: u16,
+    pub data_dir: String,
+    pub validators: Vec<String>,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct GenesisConfig {
-    pub accounts: Vec<GenesisAccount>,
-    pub chain_id: String,
-}
-
-impl Default for GenesisConfig {
+impl Default for Config {
     fn default() -> Self {
         Self {
-            chain_id: "peso-chain-devnet".to_string(),
-            accounts: Vec::new(),
+            network_name: "PESO testnet".to_string(),
+            rpc_host: "127.0.0.1".to_string(),
+            rpc_port: 3000,
+            data_dir: "./data".to_string(),
+            validators: vec![
+                "validator-1".to_string(),
+                "validator-2".to_string(),
+                "validator-3".to_string(),
+            ],
         }
     }
 }
