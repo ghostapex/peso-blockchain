@@ -19,18 +19,9 @@ fn main() {
     ledger.add_account(bob.account_id.clone(), 500_000);
 
     let validators = vec![
-        Validator {
-            id: validator_1.account_id.clone(),
-            stake: 100,
-        },
-        Validator {
-            id: validator_2.account_id.clone(),
-            stake: 100,
-        },
-        Validator {
-            id: validator_3.account_id.clone(),
-            stake: 100,
-        },
+        Validator { id: validator_1.account_id.clone(), stake: 100 },
+        Validator { id: validator_2.account_id.clone(), stake: 100 },
+        Validator { id: validator_3.account_id.clone(), stake: 100 },
     ];
 
     let mut node = Node::new("peso-node-1".to_string(), ledger, validators);
