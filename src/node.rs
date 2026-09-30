@@ -4,6 +4,7 @@ use crate::ledger::Ledger;
 use crate::network::Network;
 use crate::transaction::Transaction;
 use crate::types::AccountId;
+use std::collections::HashMap;
 
 #[derive(Clone, Debug)]
 pub struct Node {
@@ -12,6 +13,7 @@ pub struct Node {
     pub mempool: Vec<Transaction>,
     pub network: Network,
     pub consensus: Consensus,
+    pub blocks: Vec<Block>,
 }
 
 impl Node {
@@ -27,6 +29,7 @@ impl Node {
             mempool: Vec::new(),
             network,
             consensus: Consensus::new(validators),
+            blocks: Vec::new(),
         }
     }
 
@@ -65,11 +68,27 @@ impl Node {
 
         self.ledger.last_hash = block.hash.clone();
         self.ledger.height += 1;
+        self.blocks.push(block.clone());
+        self.network.broadcast_block(block.clone());
 
         Ok(block)
     }
 
     pub fn balance(&self, account_id: &str) -> u64 {
         self.ledger.get_balance(account_id)
+    }
+
+    pub fn sync_block(&mut self, block: &Block) -> Result<(), String> {
+        if block.index != self.ledger.height + 1 {
+            return Err("block index mismatch".to_string());
+        }
+
+        self.ledger.apply_block(block)?;
+        self.blocks.push(block.clone());
+        Ok(())
+    }
+
+    pub fn get_chain_height(&self) -> u64 {
+        self.ledger.height
     }
 }

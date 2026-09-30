@@ -18,7 +18,7 @@ impl Ledger {
     pub fn new() -> Self {
         Self {
             accounts: HashMap::new(),
-            last_hash: String::new(),
+            last_hash: String::from("0"),
             height: 0,
         }
     }
@@ -35,6 +35,10 @@ impl Ledger {
             .unwrap_or(0)
     }
 
+    pub fn get_account(&self, account_id: &str) -> Option<Account> {
+        self.accounts.get(account_id).cloned()
+    }
+
     pub fn apply_transaction(&mut self, tx: &Transaction) -> Result<(), String> {
         if !tx.verify() {
             return Err("invalid signature".to_string());
@@ -46,11 +50,11 @@ impl Ledger {
             .ok_or_else(|| format!("sender {} not found", tx.sender))?;
 
         if sender.balance < tx.amount {
-            return Err("insufficient funds".to_string());
+            return Err(format!("insufficient funds: {} < {}", sender.balance, tx.amount));
         }
 
         if sender.nonce != tx.nonce {
-            return Err("nonce mismatch".to_string());
+            return Err(format!("nonce mismatch: {} != {}", sender.nonce, tx.nonce));
         }
 
         sender.balance -= tx.amount;
@@ -67,6 +71,14 @@ impl Ledger {
     }
 
     pub fn apply_block(&mut self, block: &Block) -> Result<(), String> {
+        if block.index != self.height + 1 {
+            return Err(format!("block index mismatch: expected {}, got {}", self.height + 1, block.index));
+        }
+
+        if !block.prev_hash.is_empty() && block.prev_hash != self.last_hash {
+            return Err(format!("prev hash mismatch"));
+        }
+
         for tx in &block.transactions {
             self.apply_transaction(tx)?;
         }
