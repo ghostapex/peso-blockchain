@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct ValidatorNodeConfig {
+pub struct ValidatorBootstrap {
     pub id: String,
     pub stake: u64,
     pub peer: String,
@@ -9,28 +9,28 @@ pub struct ValidatorNodeConfig {
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct TestnetConfig {
-    pub validators: Vec<ValidatorNodeConfig>,
+pub struct BootstrapConfig {
+    pub validators: Vec<ValidatorBootstrap>,
     pub bootstrap_port: u16,
 }
 
-impl Default for TestnetConfig {
+impl Default for BootstrapConfig {
     fn default() -> Self {
         Self {
             validators: vec![
-                ValidatorNodeConfig {
+                ValidatorBootstrap {
                     id: "validator-1".to_string(),
                     stake: 100,
                     peer: "127.0.0.1:9001".to_string(),
                     rpc_port: 3001,
                 },
-                ValidatorNodeConfig {
+                ValidatorBootstrap {
                     id: "validator-2".to_string(),
                     stake: 200,
                     peer: "127.0.0.1:9002".to_string(),
                     rpc_port: 3002,
                 },
-                ValidatorNodeConfig {
+                ValidatorBootstrap {
                     id: "validator-3".to_string(),
                     stake: 300,
                     peer: "127.0.0.1:9003".to_string(),

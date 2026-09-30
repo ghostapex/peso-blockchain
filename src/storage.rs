@@ -3,7 +3,7 @@ use std::path::PathBuf;
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug)]
 pub struct Store {
     pub path: PathBuf,
 }
@@ -19,14 +19,14 @@ impl Store {
     }
 
     pub fn save_json<T: Serialize>(&self, filename: &str, value: &T) {
-        let file = self.path.join(filename);
-        let bytes = serde_json::to_vec_pretty(value).unwrap();
-        fs::write(file, bytes).unwrap();
+        let path = self.path.join(filename);
+        let data = serde_json::to_string_pretty(value).unwrap();
+        fs::write(path, data).unwrap();
     }
 
     pub fn load_json<T: for<'de> Deserialize<'de>>(&self, filename: &str) -> Option<T> {
-        let file = self.path.join(filename);
-        let bytes = fs::read(file).ok()?;
-        serde_json::from_slice(&bytes).ok()
+        let path = self.path.join(filename);
+        let raw = fs::read(path).ok()?;
+        serde_json::from_str(&raw).ok()
     }
 }

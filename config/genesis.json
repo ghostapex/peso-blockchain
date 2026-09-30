@@ -1,0 +1,25 @@
+{
+  "network_name": "PESO",
+  "chain_id": "peso-testnet",
+  "genesis_time": 1720000000,
+  "validators": [
+    {
+      "id": "validator-1",
+      "stake": 100,
+      "peer": "127.0.0.1:9001",
+      "rpc_port": 3001
+    },
+    {
+      "id": "validator-2",
+      "stake": 200,
+      "peer": "127.0.0.1:9002",
+      "rpc_port": 3002
+    },
+    {
+      "id": "validator-3",
+      "stake": 300,
+      "peer": "127.0.0.1:9003",
+      "rpc_port": 3003
+    }
+  ]
+}
